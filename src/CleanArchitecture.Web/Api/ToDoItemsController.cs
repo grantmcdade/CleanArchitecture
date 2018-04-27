@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Api
 {
+    [ApiController]
     [Route("api/[controller]")]
     [ValidateModel]
     public class ToDoItemsController : Controller
@@ -23,7 +24,7 @@ namespace CleanArchitecture.Web.Api
 
         // GET: api/ToDoItems
         [HttpGet]
-        public IActionResult List()
+        public ActionResult<IEnumerable<ToDoItemDTO>> List()
         {
             var items = _todoRepository.List()
                             .Select(item => ToDoItemDTO.FromToDoItem(item));
@@ -32,7 +33,7 @@ namespace CleanArchitecture.Web.Api
 
         // GET: api/ToDoItems
         [HttpGet("{id:int}")]
-        public IActionResult GetById(int id)
+        public ActionResult<ToDoItemDTO> GetById(int id)
         {
             var item = ToDoItemDTO.FromToDoItem(_todoRepository.GetById(id));
             return Ok(item);
@@ -40,7 +41,7 @@ namespace CleanArchitecture.Web.Api
 
         // POST: api/ToDoItems
         [HttpPost]
-        public IActionResult Post([FromBody] ToDoItemDTO item)
+        public ActionResult<ToDoItemDTO> Post([FromBody] ToDoItemDTO item)
         {
             var todoItem = new ToDoItem()
             {
