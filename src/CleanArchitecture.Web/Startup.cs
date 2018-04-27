@@ -38,26 +38,10 @@ namespace CleanArchitecture.Web
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-            var container = new Container();
-
-            container.Configure(config =>
-            {
-                config.Scan(_ =>
-                {
-                    _.AssemblyContainingType(typeof(Startup)); // Web
-                    _.AssemblyContainingType(typeof(BaseEntity)); // Core
-                    _.Assembly("CleanArchitecture.Infrastructure"); // Infrastructure
-                    _.WithDefaultConventions();
-                    _.ConnectImplementationsToTypesClosing(typeof(IHandle<>));
-                });
-                
-                // TODO: Add Registry Classes to eliminate reference to Infrastructure
-
-                // TODO: Move to Infrastucture Registry
-                config.For(typeof(IRepository<>)).Add(typeof(EfRepository<>));
-
+            var container = new Container(c => {
+                c.AddRegistry<WebRegistry>();
                 //Populate the container using the service collection
-                config.Populate(services);
+                c.Populate(services);
             });
 
             return container.GetInstance<IServiceProvider>();
